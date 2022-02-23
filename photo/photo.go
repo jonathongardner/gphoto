@@ -8,17 +8,7 @@ import (
   "strings"
 
   "github.com/jonathongardner/gphoto/iom"
-  "github.com/rwcarlsen/goexif/exif"
 )
-
-func yearPhotoTaken(file io.Reader) (string) {
-  photo, err := exif.Decode(file)
-  if err != nil {
-    return "unknown"
-  }
-  tm, _ := photo.DateTime()
-  return string(tm.Year())
-}
 
 func Write(reader io.Reader, folder string, ext string) (error) {
   source := &iom.MemoryReadWriteSeeker{}
@@ -26,6 +16,8 @@ func Write(reader io.Reader, folder string, ext string) (error) {
   if err != nil {
     return err
   }
+  source.Seek(0, io.SeekStart)
+
   // Get year photo was taken so we know what folder
   // returns "unkown" if cant find it
   year := yearPhotoTaken(source)

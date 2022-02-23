@@ -50,3 +50,14 @@ func (m *MemoryReadWriteSeeker) Read(p []byte) (n int, err error) {
   m.pos += length
   return length, nil
 }
+
+func (m *MemoryReadWriteSeeker) ReadAt(p []byte, off int64) (n int, err error) {
+  ln := int64(len(m.buf))
+
+  if off > ln {
+    return 0, nil
+  }
+
+  length := copy(p, m.buf[off:])
+  return length, nil
+}
