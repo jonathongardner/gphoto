@@ -11,7 +11,7 @@ import (
 	"github.com/evanoberholster/imagemeta/xmp"
 )
 
-func yearPhotoTaken(read meta.Reader) (string) {
+func YearPhotoTaken(read meta.Reader) (string) {
   var err error
 	var x xmp.XMP
 	var e *exif.Data

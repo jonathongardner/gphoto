@@ -7,6 +7,7 @@ import (
 
   "github.com/urfave/cli/v2"
   "github.com/jonathongardner/gphoto/backup"
+  "github.com/jonathongardner/gphoto/gphoto"
 )
 
 
@@ -25,22 +26,61 @@ func main() {
   }
   app.Commands = []*cli.Command{
     {
+      Name:  "init",
+      Usage: "initialze gphoto database",
+      Action: func(c *cli.Context) error {
+        err := gphoto.Init(c.String("dir"))
+        if err != nil {
+          return err
+        }
+
+        return nil
+      },
+    },
+    {
+      Name:  "build",
+      Usage: "build gphoto database",
+      Action: func(c *cli.Context) error {
+        db, err := gphoto.Open(c.String("dir"))
+        if err != nil {
+          return err
+        }
+        defer db.Close()
+
+        return db.Build()
+      },
+    },
+    {
+      Name:  "list",
+      Usage: "list paths in gphoto database",
+      Action: func(c *cli.Context) error {
+        db, err := gphoto.Open(c.String("dir"))
+        if err != nil {
+          return err
+        }
+        defer db.Close()
+
+        return db.ListFiles()
+      },
+    },
+    {
       Name:  "add-zip",
-      Usage: "Add photos in zip to gphoto folder",
+      Usage: "Add photos in zip to gphoto",
       Action: func(c *cli.Context) error {
         if !c.Args().Present() {
           return errors.New("must pass argument")
         }
 
-        dir := c.String("dir")
-        if !dirExists(dir) {
-          return errors.New("dir " + dir + " must exist")
+        db, err := gphoto.Open(c.String("dir"))
+        if err != nil {
+          return err
         }
+        defer db.Close()
 
         for i := 0; i < c.Args().Len(); i++ {
           path := c.Args().Get(i)
           if fileExists(path) {
-            err := backup.AddZip(path, dir)
+            err := backup.AddZip(path, db)
             if err != nil {
               return err
             }
@@ -60,15 +100,16 @@ func main() {
           return errors.New("must pass argument")
         }
 
-        dir := c.String("dir")
-        if !dirExists(dir) {
-          return errors.New("dir " + dir + " must exist")
+        db, err := gphoto.Open(c.String("dir"))
+        if err != nil {
+          return err
         }
+        defer db.Close()
 
         for i := 0; i < c.Args().Len(); i++ {
           path := c.Args().Get(i)
           if dirExists(path) {
-            err := backup.AddDir(path, dir)
+            err := backup.AddDir(path, db)
             if err != nil {
               return err
             }

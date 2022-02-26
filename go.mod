@@ -3,6 +3,7 @@ module github.com/jonathongardner/gphoto
 go 1.17
 
 require (
+	github.com/boltdb/bolt v1.3.1
 	github.com/evanoberholster/imagemeta v0.0.3
 	github.com/urfave/cli/v2 v2.3.0
 )
@@ -15,4 +16,5 @@ require (
 	github.com/russross/blackfriday/v2 v2.0.1 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/tinylib/msgp v1.1.5 // indirect
+	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f // indirect
 )

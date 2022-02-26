@@ -2,11 +2,10 @@ package iom
 
 import (
   "crypto/sha256"
-  "encoding/hex"
 )
 
 
-func (m *MemoryReadWriteSeeker)  SHA256() (string) {
+func (m *MemoryReadWriteSeeker) SHA256() ([]byte) {
   sum := sha256.Sum256(m.buf)
-  return hex.EncodeToString(sum[:])
+  return sum[:]
 }
